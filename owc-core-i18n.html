@@ -1,0 +1,36 @@
+<link rel="import" href="../polymer/polymer-element.html">
+
+<dom-module id="owc-core-i18n">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <h2>Hello [[prop1]]!</h2>
+  </template>
+
+  <script>
+    /**
+     * `owc-core-i18n`
+     * i18n manager component
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class OwcCoreI18n extends Polymer.Element {
+      static get is() { return 'owc-core-i18n'; }
+      static get properties() {
+        return {
+          prop1: {
+            type: String,
+            value: 'owc-core-i18n'
+          }
+        };
+      }
+    }
+
+    window.customElements.define(OwcCoreI18n.is, OwcCoreI18n);
+  </script>
+</dom-module>

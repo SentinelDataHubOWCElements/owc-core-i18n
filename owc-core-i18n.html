@@ -6,8 +6,18 @@
       :host {
         display: block;
       }
+
+      .container {
+        width: 200px;
+      }
     </style>
-    <h2>Hello [[prop1]]!</h2>
+    <div class="container">
+      <h3>Hello [[prop1]]!</h3>
+
+      <!-- test button -->
+      <button on-click="test">test!</button>
+      <button on-click="append">append!</button>
+    </div>
   </template>
 
   <script>
@@ -20,14 +30,147 @@
      * @demo demo/index.html
      */
     class OwcCoreI18n extends Polymer.Element {
-      static get is() { return 'owc-core-i18n'; }
+      static get is() {
+        return 'owc-core-i18n';
+      }
       static get properties() {
         return {
           prop1: {
             type: String,
             value: 'owc-core-i18n'
+          },
+          //Dictionaries
+          dictionaries: {
+            type: String,
+            value: [
+              { //english
+                en: {
+                  type: String,
+                  value: [
+                    'hello',
+                    'goodbye',
+                    'yes'
+                  ]
+                }
+              },
+              { //italian
+                it: {
+                  type: String,
+                  value: [
+                    'ciao',
+                    'arrivederci',
+                    'si'
+                  ]
+                }
+              },
+              { //spanish
+                es: {
+                  type: String,
+                  value: [
+                    'hola',
+                    'adios',
+                    'si'
+                  ]
+                }
+              }
+            ]
           }
         };
+      }
+
+      //Method called when this element is created
+      constructor() {
+        super();
+        //this.languageBaseURL = "/lang";
+        //this.owcApp = document.querySelector('#owc-app');
+        //this.languages = {};
+        var self = this;
+        console.log("dictionaries", self.dictionaries);
+      }
+
+      /**
+      *   Load language from server
+      *
+      * @param {?Object} paramExample: method parameter sample
+      * @return {null}
+      */
+      _getLanguage(lang) {
+        console.log('get language: ', lang);
+
+        // var self = this;
+        // return self._ctx.httpm.sendRequest(
+        //   'GET',
+        //   self.owcApp.config.clientUrl + '/lang/dictionary.' + lang
+        // );
+      }
+
+      // test. di in constructor?
+      test() {
+        var self = this;
+        console.log(self.dictionaries);
+
+      }
+      // append a value
+      append(language, test2) {
+        var self = this;
+        var dict = self.dictionaries;
+
+        //assign language param        
+        var lan = "it";
+        test2 = "macchina";
+
+        console.log('appending...', language, test2, "to", dict);
+
+        switch (lan) {
+          case "en":
+            dict[0].en.value.push(test2);
+            break;
+          case "it":
+            dict[1].it.value.push(test2);
+            break;
+          case "es":
+            dict[2].es.value.push(test2);
+            break;
+          default:
+            console.log("ERROR, language not recognized!");
+        }
+        console.log('new dictionary: ', dict);
+      }
+
+      /**
+      *   Set the current language
+      *
+      * @param {?Object} newValue: the new value of public Property
+      * @return {null}
+      */
+      setCurrentLanguage(lang) {
+        var self = this;
+
+        if (!this.languages || this.languages[lang] === undefined) {
+          return this._getLanguage(lang)
+            .then(function (response) {
+              if (response.status == 200) {
+                self.languages[lang] = response.data;
+                self.currentLanguage = lang;
+                localStorage.setItem("owcLanguage", lang);
+              }
+            });
+        } else {
+          self.currentLanguage = lang;
+          localStorage.setItem("owcLanguage", lang);
+          return null;
+        }
+      }
+
+      /**
+       *   Translate a string
+       *
+       * @param {?Object} newValue: the new value of public Property
+       * @return {String} translated string
+       */
+      translate(key) {
+        if ((this.languages[this.currentLanguage] === undefined)) return key;
+        return this.languages[this.currentLanguage][key] ? this.languages[this.currentLanguage][key] : key;
       }
     }
 

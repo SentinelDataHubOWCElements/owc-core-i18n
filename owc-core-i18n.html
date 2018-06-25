@@ -16,6 +16,8 @@
 
       <!-- test button -->
       <button on-click="test">check dictionaries</button>
+      <button on-click="translate">test translate</button>
+
     </div>
   </template>
 
@@ -106,7 +108,65 @@
             dict[2].es.value.push(jsonObject);
             break;
           default:
-            console.log("ERROR, language not recognized!");
+            console.error("ERROR, language not recognized for ", k, " ", v);
+        }
+      }
+
+      // check dictionaries
+      test() {
+        var self = this;
+        var dic = JSON.stringify(self.dictionaries);
+        console.log(dic);
+      }
+
+      //Translate function
+      translate(key, language) {
+        var self = this;
+        var dict = self.dictionaries;
+
+        key = 'Welcome';
+        language = 'it';
+
+
+        switch (language) {
+          case "en":
+            //translate to english
+            break;
+          case "it":
+            var arr = dict[1].it.value;
+            arr.forEach(element => {
+              for (var k in element) {
+                if (k == key) {
+                  console.log(key, ' -> ', element[k]);
+                }
+              }
+            });
+            break;
+          case "es":
+            var arr = dict[2].es.value;
+            arr.forEach(element => {
+              for (var k in element) {
+                if (k == key) {
+                  console.log(key, ' -> ', element[k]);
+                }
+              }
+            });
+            break;
+          default:
+            console.error("ERROR, language", lang, " not recognized for ", k, " ", v);
+        }
+
+        var dummy = false;
+        if (dummy == false) {//not present in dictionary
+          console.log("no translate for ", key, " using default value", key);
+          return key;
+        } else {// dummy == true  present in specific language dictionary
+
+          //Perform search
+          var jsonObject = dict[1].it.value[2];
+
+          console.log(jsonObject[key]);
+          return jsonObject[key];
         }
       }
 
@@ -124,12 +184,7 @@
         );
       }
 
-      // check dictionaries
-      test() {
-        var self = this;
-        var dic = JSON.stringify(self.dictionaries);
-        console.log(dic);
-      }
+
 
       /**
       *   Set the current language
@@ -162,10 +217,10 @@
        * @param {?Object} newValue: the new value of public Property
        * @return {String} translated string
        */
-      translate(key) {
-        // if ((this.languages[this.currentLanguage] === undefined)) return key;
-        // return this.languages[this.currentLanguage][key] ? this.languages[this.currentLanguage][key] : key;
-      }
+      //translate(key) {
+      // if ((this.languages[this.currentLanguage] === undefined)) return key;
+      // return this.languages[this.currentLanguage][key] ? this.languages[this.currentLanguage][key] : key;
+      //}
     }
 
     window.customElements.define(OwcCoreI18n.is, OwcCoreI18n);

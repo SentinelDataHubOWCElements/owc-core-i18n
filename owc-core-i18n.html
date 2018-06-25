@@ -12,11 +12,10 @@
       }
     </style>
     <div class="container">
-      <h3>Hello [[prop1]]!</h3>
+      <h3>Hello [[componentName]]!</h3>
 
       <!-- test button -->
-      <button on-click="test">test!</button>
-      <button on-click="append">append!</button>
+      <button on-click="test">check dictionaries</button>
     </div>
   </template>
 
@@ -35,7 +34,7 @@
       }
       static get properties() {
         return {
-          prop1: {
+          componentName: {
             type: String,
             value: 'owc-core-i18n'
           },
@@ -47,9 +46,7 @@
                 en: {
                   type: String,
                   value: [
-                    'hello',
-                    'goodbye',
-                    'yes'
+                    //default english dictionary here...
                   ]
                 }
               },
@@ -57,9 +54,7 @@
                 it: {
                   type: String,
                   value: [
-                    'ciao',
-                    'arrivederci',
-                    'si'
+                    //default italian dictionary here...
                   ]
                 }
               },
@@ -67,9 +62,7 @@
                 es: {
                   type: String,
                   value: [
-                    'hola',
-                    'adios',
-                    'si'
+                    //default spanish dictionary here...
                   ]
                 }
               }
@@ -78,14 +71,43 @@
         };
       }
 
-      //Method called when this element is created
       constructor() {
         super();
-        //this.languageBaseURL = "/lang";
-        //this.owcApp = document.querySelector('#owc-app');
-        //this.languages = {};
         var self = this;
-        console.log("dictionaries", self.dictionaries);
+      }
+
+      ready() {
+        super.ready();
+        var self = this;
+      }
+
+      /**
+      *   Append a json object to a given dictionary
+      * @param language: language to append json to
+      * @param k : key value. NOTE: it will be converted to the string param
+      * @param v : value
+      */
+      appendJson(language, k, v) {
+        var self = this;
+        var dict = self.dictionaries;
+
+        //Create json object to assign a string value to key
+        var jsonObject = {};
+        jsonObject[k] = v; //Assign string value to key
+
+        switch (language) {
+          case "en":
+            dict[0].en.value.push(jsonObject);
+            break;
+          case "it":
+            dict[1].it.value.push(jsonObject);
+            break;
+          case "es":
+            dict[2].es.value.push(jsonObject);
+            break;
+          default:
+            console.log("ERROR, language not recognized!");
+        }
       }
 
       /**
@@ -95,46 +117,18 @@
       * @return {null}
       */
       _getLanguage(lang) {
-        console.log('get language: ', lang);
-
-        // var self = this;
-        // return self._ctx.httpm.sendRequest(
-        //   'GET',
-        //   self.owcApp.config.clientUrl + '/lang/dictionary.' + lang
-        // );
+        var self = this;
+        return self._ctx.httpm.sendRequest(
+          // 'GET',
+          // self.owcApp.config.clientUrl + '/lang/dictionary.' + lang
+        );
       }
 
-      // test. di in constructor?
+      // check dictionaries
       test() {
         var self = this;
-        console.log(self.dictionaries);
-
-      }
-      // append a value
-      append(language, test2) {
-        var self = this;
-        var dict = self.dictionaries;
-
-        //assign language param        
-        var lan = "it";
-        test2 = "macchina";
-
-        console.log('appending...', language, test2, "to", dict);
-
-        switch (lan) {
-          case "en":
-            dict[0].en.value.push(test2);
-            break;
-          case "it":
-            dict[1].it.value.push(test2);
-            break;
-          case "es":
-            dict[2].es.value.push(test2);
-            break;
-          default:
-            console.log("ERROR, language not recognized!");
-        }
-        console.log('new dictionary: ', dict);
+        var dic = JSON.stringify(self.dictionaries);
+        console.log(dic);
       }
 
       /**
@@ -146,20 +140,20 @@
       setCurrentLanguage(lang) {
         var self = this;
 
-        if (!this.languages || this.languages[lang] === undefined) {
-          return this._getLanguage(lang)
-            .then(function (response) {
-              if (response.status == 200) {
-                self.languages[lang] = response.data;
-                self.currentLanguage = lang;
-                localStorage.setItem("owcLanguage", lang);
-              }
-            });
-        } else {
-          self.currentLanguage = lang;
-          localStorage.setItem("owcLanguage", lang);
-          return null;
-        }
+        // if (!this.languages || this.languages[lang] === undefined) {
+        //   return this._getLanguage(lang)
+        //     .then(function (response) {
+        //       if (response.status == 200) {
+        //         self.languages[lang] = response.data;
+        //         self.currentLanguage = lang;
+        //         localStorage.setItem("owcLanguage", lang);
+        //       }
+        //     });
+        // } else {
+        //   self.currentLanguage = lang;
+        //   localStorage.setItem("owcLanguage", lang);
+        //   return null;
+        // }
       }
 
       /**
@@ -169,8 +163,8 @@
        * @return {String} translated string
        */
       translate(key) {
-        if ((this.languages[this.currentLanguage] === undefined)) return key;
-        return this.languages[this.currentLanguage][key] ? this.languages[this.currentLanguage][key] : key;
+        // if ((this.languages[this.currentLanguage] === undefined)) return key;
+        // return this.languages[this.currentLanguage][key] ? this.languages[this.currentLanguage][key] : key;
       }
     }
 

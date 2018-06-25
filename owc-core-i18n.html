@@ -42,11 +42,12 @@
           },
           //Dictionaries
           dictionaries: {
-            type: String,
-            value: [
+            type: Array,
+            value: 
+             [
               { //english
                 en: {
-                  type: String,
+                  type: Array,
                   value: [
                     //default english dictionary here...
                   ]
@@ -54,7 +55,7 @@
               },
               { //italian
                 it: {
-                  type: String,
+                  type: Array,
                   value: [
                     //default italian dictionary here...
                   ]
@@ -62,7 +63,7 @@
               },
               { //spanish
                 es: {
-                  type: String,
+                  type: Array,
                   value: [
                     //default spanish dictionary here...
                   ]
@@ -124,23 +125,35 @@
         var self = this;
         var dict = self.dictionaries;
 
-        key = 'Welcome';
+        key = 'sas';
         language = 'it';
 
+        var result = key;
 
         switch (language) {
           case "en":
             //translate to english
             break;
           case "it":
-            var arr = dict[1].it.value;
-            arr.forEach(element => {
+            var isPresent = false;
+            var oneLangDictionary = dict[1].it.value;
+            oneLangDictionary.forEach(element => {
               for (var k in element) {
                 if (k == key) {
-                  console.log(key, ' -> ', element[k]);
+                  result = element[k]; //translate
+                  console.log(key, ' -> ', result);
+                  isPresent = true;
                 }
               }
             });
+
+            //If no translate was found, will return the value given in input
+            if (isPresent == false) {
+              console.log("No translation for ", key, " for language ", language);
+            }
+
+            //Final TryTranslate Result
+            console.log("FINAL RESULT AFTER TryTranslate: ", result);
             break;
           case "es":
             var arr = dict[2].es.value;
@@ -158,7 +171,7 @@
 
         var dummy = false;
         if (dummy == false) {//not present in dictionary
-          console.log("no translate for ", key, " using default value", key);
+          // console.log("no translate for ", key, " using default value", key);
           return key;
         } else {// dummy == true  present in specific language dictionary
 

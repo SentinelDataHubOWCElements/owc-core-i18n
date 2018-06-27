@@ -18,8 +18,6 @@
       <button on-click="test">check dictionaries</button>
       <button on-click="translate">test translate</button>
       <button on-click="appendDynamic">append Dynamically</button>
-
-
     </div>
   </template>
 
@@ -76,15 +74,19 @@
         var dict = self.dictionaries;
 
         //Create a json object from key/value pair
-        var jsonObject = {};
-        jsonObject[k] = val;
+        // var jsonObject = {};
+        // jsonObject[k] = val;
 
         //If dictionary doesent exists, create it
         if (dict[language] == undefined) {
-          console.log("New dictionary: ", language);
-          dict[language] = [];
+          dict[language] = {};
         }
-        dict[language].push(jsonObject);
+
+        if (dict[language][k] == undefined) {
+          dict[language][k] = {}
+        }
+
+        dict[language][k] = val;
       }
 
       /**
@@ -124,67 +126,93 @@
       }
 
       //Translate function
-      translate(key, language) {
+      translate(keyz, language) {
         var self = this;
         var dict = self.dictionaries;
+        var myLanguage = this.currentLanguage;
 
-        //Mock values
-        language = 'it';
-        key = 'Welcome';
-
-        var result = key;
-
-        switch (language) {
-          case "en":
-            //translate to english
-            break;
-          case "it":
-            var isPresent = false;
-            var oneLangDictionary = dict[1].it.value;
-            oneLangDictionary.forEach(element => {
-              for (var k in element) {
-                if (k == key) {
-                  result = element[k]; //translate
-                  console.log(key, ' -> ', result);
-                  isPresent = true;
-                }
-              }
-            });
-
-            //If no translate was found, will return the value given in input
-            if (isPresent == false) {
-              console.log("No translation for ", key, " for language ", language);
-            }
-
-            //Final TryTranslate Result
-            console.log("FINAL RESULT AFTER TryTranslate: ", result);
-            break;
-          case "es":
-            var arr = dict[2].es.value;
-            arr.forEach(element => {
-              for (var k in element) {
-                if (k == key) {
-                  console.log(key, ' -> ', element[k]);
-                }
-              }
-            });
-            break;
-          default:
-            console.error("ERROR, language", lang, " not recognized for ", k, " ", v);
+        // var result = keyz;
+        // if (dict[language] == undefined) {
+        //   console.error("UNKNOWN LANGUAGE: ", language, " for key ", keyz);
+        //   return keyz;
+        // } else {
+        //   for (let index = 0; index < dict[language].length; index++) {
+        //     for (var k in dict[language][index]) {
+        //       if (k == keyz) {
+        //         var founded = dict[language][index][k]; //translate
+        //         console.log(keyz, ' -> ', result);
+        //         result = founded;
+        //       }
+        //     }
+        //   }
+        // }
+        // console.log("FINAL RESULT AFTER TryTranslate: ", result);
+        var result = keyz;
+        if (dict[language] == undefined) {
+          console.error("UNKNOWN LANGUAGE: ", language, " for key ", keyz);
+          return keyz;
+        } else {
+          var a = dict[language][keyz];
+          if (a == undefined) {
+            console.log('no translation founded, using default');
+            return keyz
+          } else {
+            console.log('returning', dict[language][keyz]);
+            return dict[language][keyz]
+          }
         }
 
-        var dummy = false;
-        if (dummy == false) {//not present in dictionary
-          // console.log("no translate for ", key, " using default value", key);
-          return key;
-        } else {// dummy == true  present in specific language dictionary
+        // switch (language) {
+        //   case "en":
+        //     //translate to english
+        //     break;
+        //   case "it":
+        //     var isPresent = false;
+        //     var oneLangDictionary = dict[1].it.value;
+        //     oneLangDictionary.forEach(element => {
+        //       for (var k in element) {
+        //         if (k == key) {
+        //           result = element[k]; //translate
+        //           console.log(key, ' -> ', result);
+        //           isPresent = true;
+        //         }
+        //       }
+        //     });
 
-          //Perform search
-          var jsonObject = dict[1].it.value[2];
+        //     //If no translate was found, will return the value given in input
+        //     if (isPresent == false) {
+        //       console.log("No translation for ", key, " for language ", language);
+        //     }
 
-          console.log(jsonObject[key]);
-          return jsonObject[key];
-        }
+        //     //Final TryTranslate Result
+        //     console.log("FINAL RESULT AFTER TryTranslate: ", result);
+        //     break;
+        //   case "es":
+        //     var arr = dict[2].es.value;
+        //     arr.forEach(element => {
+        //       for (var k in element) {
+        //         if (k == key) {
+        //           console.log(key, ' -> ', element[k]);
+        //         }
+        //       }
+        //     });
+        //     break;
+        //   default:
+        //     console.error("ERROR, language", lang, " not recognized for ", k, " ", v);
+        // }
+
+        // var dummy = false;
+        // if (dummy == false) {//not present in dictionary
+        //   // console.log("no translate for ", key, " using default value", key);
+        //   return key;
+        // } else {// dummy == true  present in specific language dictionary
+
+        //   //Perform search
+        //   var jsonObject = dict[1].it.value[2];
+
+        //   console.log(jsonObject[key]);
+        //   return jsonObject[key];
+        // }
       }
 
       /**

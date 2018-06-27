@@ -17,6 +17,8 @@
       <!-- test button -->
       <button on-click="test">check dictionaries</button>
       <button on-click="translate">test translate</button>
+      <button on-click="appendDynamic">append Dynamically</button>
+
 
     </div>
   </template>
@@ -40,36 +42,14 @@
             type: String,
             value: 'owc-core-i18n'
           },
+          currentLanguage: {
+            type: String,
+            value: 'en'
+          },
           //Dictionaries
           dictionaries: {
             type: Array,
-            value: 
-             [
-              { //english
-                en: {
-                  type: Array,
-                  value: [
-                    //default english dictionary here...
-                  ]
-                }
-              },
-              { //italian
-                it: {
-                  type: Array,
-                  value: [
-                    //default italian dictionary here...
-                  ]
-                }
-              },
-              { //spanish
-                es: {
-                  type: Array,
-                  value: [
-                    //default spanish dictionary here...
-                  ]
-                }
-              }
-            ]
+            value: {}
           }
         };
       }
@@ -82,6 +62,29 @@
       ready() {
         super.ready();
         var self = this;
+        console.log('CURRENT LANGUAGE', this.currentLanguage);
+      }
+
+      /**
+      *   Append a json object to a given dictionary
+      * @param language: language to append json to. if language is not present ill be created a new one
+      * @param k : key value. NOTE: it will be converted to the string param
+      * @param val : value
+      */
+      appendTerm(language, k, val) {
+        var self = this;
+        var dict = self.dictionaries;
+
+        //Create a json object from key/value pair
+        var jsonObject = {};
+        jsonObject[k] = val;
+
+        //If dictionary doesent exists, create it
+        if (dict[language] == undefined) {
+          console.log("New dictionary: ", language);
+          dict[language] = [];
+        }
+        dict[language].push(jsonObject);
       }
 
       /**
@@ -91,26 +94,26 @@
       * @param v : value
       */
       appendJson(language, k, v) {
-        var self = this;
-        var dict = self.dictionaries;
+        // var self = this;
+        // var dict = self.dictionaries;
 
-        //Create json object to assign a string value to key
-        var jsonObject = {};
-        jsonObject[k] = v; //Assign string value to key
+        // //Create json object to assign a string value to key
+        // var jsonObject = {};
+        // jsonObject[k] = v; //Assign string value to key
 
-        switch (language) {
-          case "en":
-            dict[0].en.value.push(jsonObject);
-            break;
-          case "it":
-            dict[1].it.value.push(jsonObject);
-            break;
-          case "es":
-            dict[2].es.value.push(jsonObject);
-            break;
-          default:
-            console.error("ERROR, language not recognized for ", k, " ", v);
-        }
+        // switch (language) {
+        //   case "en":
+        //     dict[0].en.value.push(jsonObject);
+        //     break;
+        //   case "it":
+        //     dict[1].it.value.push(jsonObject);
+        //     break;
+        //   case "es":
+        //     dict[2].es.value.push(jsonObject);
+        //     break;
+        //   default:
+        //     console.error("ERROR, language not recognized for ", k, " ", v);
+        // }
       }
 
       // check dictionaries
@@ -125,8 +128,9 @@
         var self = this;
         var dict = self.dictionaries;
 
-        key = 'sas';
+        //Mock values
         language = 'it';
+        key = 'Welcome';
 
         var result = key;
 

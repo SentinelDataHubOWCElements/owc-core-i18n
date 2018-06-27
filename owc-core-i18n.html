@@ -14,8 +14,9 @@
     <div class="container">
       <h3>Hello [[componentName]]!</h3>
 
+
       <!-- test button -->
-      <button on-click="test">check dictionaries</button>
+      <button on-click="test">LOG dictionaries</button>
       <button on-click="translate">test translate</button>
       <button on-click="appendDynamic">append Dynamically</button>
     </div>
@@ -42,11 +43,10 @@
           },
           currentLanguage: {
             type: String,
-            value: 'en'
+            value: 'en' //default language
           },
-          //Dictionaries
           dictionaries: {
-            type: Array,
+            type: Object,
             value: {}
           }
         };
@@ -54,17 +54,25 @@
 
       constructor() {
         super();
-        var self = this;
       }
 
       ready() {
         super.ready();
         var self = this;
-        console.log('CURRENT LANGUAGE', this.currentLanguage);
+
+        // Component ready. Cold put some default values here
+        self.appendTerm('default', 'defaultKey', 'defaultValue'); //Example default append
+      }
+
+      // check and log dictionaries
+      test() {
+        var self = this;
+        console.log(JSON.stringify(self.dictionaries));
       }
 
       /**
       *   Append a json object to a given dictionary
+      *
       * @param language: language to append json to. if language is not present ill be created a new one
       * @param k : key value. NOTE: it will be converted to the string param
       * @param val : value
@@ -73,187 +81,8 @@
         var self = this;
         var dict = self.dictionaries;
 
-        //Create a json object from key/value pair
-        // var jsonObject = {};
-        // jsonObject[k] = val;
-
-        //If dictionary doesent exists, create it
-        if (dict[language] == undefined) {
-          dict[language] = {};
-        }
-
-        if (dict[language][k] == undefined) {
-          dict[language][k] = {}
-        }
-
-        dict[language][k] = val;
-      }
-
-      /**
-      *   Append a json object to a given dictionary
-      * @param language: language to append json to
-      * @param k : key value. NOTE: it will be converted to the string param
-      * @param v : value
-      */
-      appendJson(language, k, v) {
-        // var self = this;
-        // var dict = self.dictionaries;
-
-        // //Create json object to assign a string value to key
-        // var jsonObject = {};
-        // jsonObject[k] = v; //Assign string value to key
-
-        // switch (language) {
-        //   case "en":
-        //     dict[0].en.value.push(jsonObject);
-        //     break;
-        //   case "it":
-        //     dict[1].it.value.push(jsonObject);
-        //     break;
-        //   case "es":
-        //     dict[2].es.value.push(jsonObject);
-        //     break;
-        //   default:
-        //     console.error("ERROR, language not recognized for ", k, " ", v);
-        // }
-      }
-
-      // check dictionaries
-      test() {
-        var self = this;
-        var dic = JSON.stringify(self.dictionaries);
-        console.log(dic);
-      }
-
-      //Translate function
-      translate(keyz, language) {
-        var self = this;
-        var dict = self.dictionaries;
-        var myLanguage = this.currentLanguage;
-
-        // var result = keyz;
-        // if (dict[language] == undefined) {
-        //   console.error("UNKNOWN LANGUAGE: ", language, " for key ", keyz);
-        //   return keyz;
-        // } else {
-        //   for (let index = 0; index < dict[language].length; index++) {
-        //     for (var k in dict[language][index]) {
-        //       if (k == keyz) {
-        //         var founded = dict[language][index][k]; //translate
-        //         console.log(keyz, ' -> ', result);
-        //         result = founded;
-        //       }
-        //     }
-        //   }
-        // }
-        // console.log("FINAL RESULT AFTER TryTranslate: ", result);
-        var result = keyz;
-        if (dict[language] == undefined) {
-          console.error("UNKNOWN LANGUAGE: ", language, " for key ", keyz);
-          return keyz;
-        } else {
-          var a = dict[language][keyz];
-          if (a == undefined) {
-            console.log('no translation founded, using default');
-            return keyz
-          } else {
-            console.log('returning', dict[language][keyz]);
-            return dict[language][keyz]
-          }
-        }
-
-        // switch (language) {
-        //   case "en":
-        //     //translate to english
-        //     break;
-        //   case "it":
-        //     var isPresent = false;
-        //     var oneLangDictionary = dict[1].it.value;
-        //     oneLangDictionary.forEach(element => {
-        //       for (var k in element) {
-        //         if (k == key) {
-        //           result = element[k]; //translate
-        //           console.log(key, ' -> ', result);
-        //           isPresent = true;
-        //         }
-        //       }
-        //     });
-
-        //     //If no translate was found, will return the value given in input
-        //     if (isPresent == false) {
-        //       console.log("No translation for ", key, " for language ", language);
-        //     }
-
-        //     //Final TryTranslate Result
-        //     console.log("FINAL RESULT AFTER TryTranslate: ", result);
-        //     break;
-        //   case "es":
-        //     var arr = dict[2].es.value;
-        //     arr.forEach(element => {
-        //       for (var k in element) {
-        //         if (k == key) {
-        //           console.log(key, ' -> ', element[k]);
-        //         }
-        //       }
-        //     });
-        //     break;
-        //   default:
-        //     console.error("ERROR, language", lang, " not recognized for ", k, " ", v);
-        // }
-
-        // var dummy = false;
-        // if (dummy == false) {//not present in dictionary
-        //   // console.log("no translate for ", key, " using default value", key);
-        //   return key;
-        // } else {// dummy == true  present in specific language dictionary
-
-        //   //Perform search
-        //   var jsonObject = dict[1].it.value[2];
-
-        //   console.log(jsonObject[key]);
-        //   return jsonObject[key];
-        // }
-      }
-
-      /**
-      *   Load language from server
-      *
-      * @param {?Object} paramExample: method parameter sample
-      * @return {null}
-      */
-      _getLanguage(lang) {
-        var self = this;
-        return self._ctx.httpm.sendRequest(
-          // 'GET',
-          // self.owcApp.config.clientUrl + '/lang/dictionary.' + lang
-        );
-      }
-
-
-
-      /**
-      *   Set the current language
-      *
-      * @param {?Object} newValue: the new value of public Property
-      * @return {null}
-      */
-      setCurrentLanguage(lang) {
-        var self = this;
-
-        // if (!this.languages || this.languages[lang] === undefined) {
-        //   return this._getLanguage(lang)
-        //     .then(function (response) {
-        //       if (response.status == 200) {
-        //         self.languages[lang] = response.data;
-        //         self.currentLanguage = lang;
-        //         localStorage.setItem("owcLanguage", lang);
-        //       }
-        //     });
-        // } else {
-        //   self.currentLanguage = lang;
-        //   localStorage.setItem("owcLanguage", lang);
-        //   return null;
-        // }
+        if (dict[language] == undefined) { dict[language] = {}; } //If dictionary doesnt exists, create it
+        dict[language][k] = val; //Append new term 
       }
 
       /**
@@ -262,10 +91,28 @@
        * @param {?Object} newValue: the new value of public Property
        * @return {String} translated string
        */
-      //translate(key) {
-      // if ((this.languages[this.currentLanguage] === undefined)) return key;
-      // return this.languages[this.currentLanguage][key] ? this.languages[this.currentLanguage][key] : key;
-      //}
+      translate(keyz, language) {
+        var self = this;
+        var languageDictionary = self.dictionaries[language];
+
+        if (languageDictionary == undefined) { //if looking for a non existing language, throws an error but still returns the value
+          console.error("UNKNOWN LANGUAGE: ", language, " for key ", keyz);
+          return keyz;
+        }
+
+        //Return the corresponding translations if it finds one, otherwise returns the input value
+        return languageDictionary[keyz] == undefined ? keyz : languageDictionary[keyz];
+      }
+
+      /**
+      *   Set current language
+      *
+      * @param {String} newValue: language to set
+      */
+      setCurrentLanguage(newValue) {
+        var self = this;
+        this.currentLanguage = lang
+      }
     }
 
     window.customElements.define(OwcCoreI18n.is, OwcCoreI18n);

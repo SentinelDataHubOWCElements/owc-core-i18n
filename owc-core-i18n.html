@@ -2,25 +2,6 @@
 
 <dom-module id="owc-core-i18n">
   <template>
-    <style>
-      :host {
-        display: block;
-      }
-
-      .container {
-        width: 200px;
-      }
-    </style>
-    <div class="container">
-      <h3>Hello [[componentName]]!</h3>
-
-      <!-- test button -->
-      <button on-click="append">Multiple Append</button>
-      <button on-click="translate">test translate</button>
-      <button on-click="appendDynamic">append Dynamically</button>
-      <button on-click="logDictionary">LOG DICTIONARY</button>
-
-    </div>
   </template>
 
   <script>
@@ -49,26 +30,6 @@
           dictionaries: {
             type: Object,
             value: {}
-          },
-          exampleData: {
-            type: Object,
-            value: {
-              "welcome":
-              {
-                "en": "Hello",
-                "it": "Benvenuto"
-              },
-              "logout":
-              {
-                "it": "esci",
-                "es": "logout"
-              },
-              "cat":
-              {
-                "it": "gatto",
-                "fr": "chat"
-              },
-            }
           }
         };
       }
@@ -80,7 +41,6 @@
       ready() {
         super.ready();
         var self = this;
-        self.appendTerm('it', 'hi', 'ciao'); //Example default append
       }
 
       /**
@@ -98,7 +58,6 @@
             var val = data[key][language];
 
             //Append the single term
-            console.log('APPEND: Language: ', language, 'key is ', key, 'val is ', val);
             self.appendTerm(language, key, val);
           });
         });

@@ -14,11 +14,12 @@
     <div class="container">
       <h3>Hello [[componentName]]!</h3>
 
-
       <!-- test button -->
-      <button on-click="test">LOG dictionaries</button>
+      <button on-click="append">Multiple Append</button>
       <button on-click="translate">test translate</button>
       <button on-click="appendDynamic">append Dynamically</button>
+      <button on-click="logDictionary">LOG DICTIONARY</button>
+
     </div>
   </template>
 
@@ -48,6 +49,26 @@
           dictionaries: {
             type: Object,
             value: {}
+          },
+          exampleData: {
+            type: Object,
+            value: {
+              "welcome":
+              {
+                "en": "Hello",
+                "it": "Benvenuto"
+              },
+              "logout":
+              {
+                "it": "esci",
+                "es": "logout"
+              },
+              "cat":
+              {
+                "it": "gatto",
+                "fr": "chat"
+              },
+            }
           }
         };
       }
@@ -59,15 +80,33 @@
       ready() {
         super.ready();
         var self = this;
-
-        // Component ready. Cold put some default values here
-        self.appendTerm('default', 'defaultKey', 'defaultValue'); //Example default append
+        self.appendTerm('it', 'hi', 'ciao'); //Example default append
       }
 
-      // check and log dictionaries
-      test() {
+      /**
+      *   Append a json object to dictionaries
+      *
+      * @param example: data to append to dictionaries
+      */
+      append(example) {
         var self = this;
-        console.log(JSON.stringify(self.dictionaries));
+        example = this.exampleData;
+        var data = example;
+
+        Object.keys(data).forEach(function (key) {
+          Object.keys(data[key]).forEach(function (language) {
+            var val = data[key][language];
+
+            //Append the single term
+            console.log('APPEND: Language: ', language, 'key is ', key, 'val is ', val);
+            self.appendTerm(language, key, val);
+          });
+        });
+      }
+
+      logDictionary() {
+        var self = this;
+        console.log(self.dictionaries);
       }
 
       /**
@@ -96,7 +135,6 @@
         var languageDictionary = self.dictionaries[language];
 
         if (languageDictionary == undefined) { //if looking for a non existing language, throws an error but still returns the value
-          console.error("UNKNOWN LANGUAGE: ", language, " for key ", keyz);
           return keyz;
         }
 

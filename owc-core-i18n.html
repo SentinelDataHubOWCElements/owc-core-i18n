@@ -1,117 +1,103 @@
 <link rel="import" href="../polymer/polymer-element.html">
 
 <dom-module id="owc-core-i18n">
-  <template>
-  </template>
-
+  <template></template>
   <script>
-    /**
-     * `owc-core-i18n`
-     * i18n manager component
-     *
-     * @customElement
-     * @polymer
-     * @demo demo/index.html
-     */
     class OwcCoreI18n extends Polymer.Element {
-      static get is() {
-        return 'owc-core-i18n';
-      }
+      static get is() { return 'owc-core-i18n'; }
       static get properties() {
         return {
-          componentName: {
-            type: String,
-            value: 'owc-core-i18n'
-          },
           currentLanguage: {
             type: String,
-            value: 'en' //default language
+            value: 'en' //Application language
           },
-          dictionaries: {
+          dictionaries: { //All dictionaries
             type: Object,
             value: {}
           }
         };
       }
 
-      constructor() {
-        super();
-      }
-
       ready() {
         super.ready();
-        var self = this;
+        HTMLElement.prototype.i18n = function (termToTranslate) {//Prototype i18n
+          return this._ctx.i18n.translate(termToTranslate, this._ctx.i18n.currentLanguage)
+        }
+
+        //Dictionaries terms as Json object
+        var json = {
+          "Attribute": {
+            "it": "Valore",
+            "es": "Atributo"
+          },
+          "list": {
+            "it": "lista",
+            "es": "catálogo"
+          },
+          "loginLabel": {
+            "en": "login",
+            "it": "accedi",
+            "es": "acceso"
+          },
+          "password": {
+            "it": "parola chiave",
+            "es": "contraseña "
+          },
+          "username": {
+            "it": "nome utente"
+          },
+          "Welcome": {
+            "en": "Hello",
+            "it": "Benvenuto",
+            "es": "Bienvenida"
+          },
+          "wrongLogin": {
+            "en": "The user name and password you entered did not match.",
+            "it": "Il nome utente e la password che hai inserito non corrispondono.",
+            "es": "El nombre de usuario y la contraseña que ingresó no coinciden. "
+          }
+        }
+        this.append(json); //Add json to dictionaries
       }
 
       /**
-      *   Append a json object to dictionaries
+      *   Append a json object to all dictionaries specified in json data
       *
-      * @param example: data to append to dictionaries
+      * @param jsonData: example to append to dictionaries
+      * key: keyTerm value 
       */
-      append(example) {
+      append(jsonData) {
         var self = this;
-        example = this.exampleData;
-        var data = example;
-
-        Object.keys(data).forEach(function (key) {
-          Object.keys(data[key]).forEach(function (language) {
-            var val = data[key][language];
-
-            //Append the single term
-            self.appendTerm(language, key, val);
+        Object.keys(jsonData).forEach(function (key) {
+          Object.keys(jsonData[key]).forEach(function (language) {
+            self.appendTerm(language, key, jsonData[key][language]); //Append the single term
           });
         });
       }
 
-      logDictionary() {
-        var self = this;
-        console.log(self.dictionaries);
-      }
-
       /**
-      *   Append a json object to a given dictionary
+      *   Append a single term in json format to a given dictionary
       *
       * @param language: language to append json to. if language is not present ill be created a new one
-      * @param k : key value. NOTE: it will be converted to the string param
+      * @param keyTerm : key value. 
       * @param val : value
       */
-      appendTerm(language, k, val) {
-        var self = this;
-        var dict = self.dictionaries;
-
-        if (dict[language] == undefined) { dict[language] = {}; } //If dictionary doesnt exists, create it
-        dict[language][k] = val; //Append new term 
+      appendTerm(language, keyTerm, val) {
+        if (this.dictionaries[language] == undefined) this.dictionaries[language] = {}; //If dictionary doesnt exists, create it      
+        this.dictionaries[language][keyTerm] = val; //Append new term 
       }
 
       /**
-       *   Translate a string
+       *  Returns the corresponding translations if it finds one, otherwise returns the input value, using currentLanguage of i18n Component
        *
        * @param {?Object} newValue: the new value of public Property
-       * @return {String} translated string
+       * @return {String} if a translation is present for the current language return the proper translations, otherwise returns
        */
-      translate(keyz, language) {
-        var self = this;
-        var languageDictionary = self.dictionaries[language];
-
-        if (languageDictionary == undefined) { //if looking for a non existing language, throws an error but still returns the value
-          return keyz;
-        }
-
-        //Return the corresponding translations if it finds one, otherwise returns the input value
-        return languageDictionary[keyz] == undefined ? keyz : languageDictionary[keyz];
-      }
-
-      /**
-      *   Set current language
-      *
-      * @param {String} newValue: language to set
-      */
-      setCurrentLanguage(newValue) {
-        var self = this;
-        this.currentLanguage = lang
+      translate(keyTerm, language) {
+        if (this.dictionaries[language] == undefined) return keyTerm; //if looking for a non existing language, still returns the value
+        return this.dictionaries[language][keyTerm] == undefined ? keyTerm : this.dictionaries[language][keyTerm];
       }
     }
-
     window.customElements.define(OwcCoreI18n.is, OwcCoreI18n);
   </script>
 </dom-module>

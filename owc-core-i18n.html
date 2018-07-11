@@ -13,51 +13,42 @@
           },
           dictionaries: { //All dictionaries
             type: Object,
+            value: {
+              "username": {
+                "it": "nome utente"
+              },
+              "Welcome": {
+                "en": "Hello",
+                "it": "Benvenuto",
+                "es": "Bienvenida"
+              },
+              "wrongLogin": {
+                "en": "The user name and password you entered did not match.",
+                "it": "Il nome utente e la password che hai inserito non corrispondono.",
+                "es": "El nombre de usuario y la contraseña que ingresó no coinciden. "
+              }
+            }
+          },
+          defaultDictionaries: { //All dictionaries
+            type: Object,
             value: {}
           }
         };
       }
 
+      constructor() {
+        super();
+        HTMLElement.prototype.i18n = function (termToTranslate) {
+          return this._ctx.i18n.translate(termToTranslate, this._ctx.i18n.currentLanguage);
+        }
+      }
+
       ready() {
         super.ready();
-        HTMLElement.prototype.i18n = function (termToTranslate) {//Prototype i18n
-          return this._ctx.i18n.translate(termToTranslate, this._ctx.i18n.currentLanguage)
-        }
+        var self = this;
 
-        //Dictionaries terms as Json object
-        var json = {
-          "Attribute": {
-            "it": "Valore",
-            "es": "Atributo"
-          },
-          "list": {
-            "it": "lista",
-            "es": "catálogo"
-          },
-          "loginLabel": {
-            "en": "login",
-            "it": "accedi",
-            "es": "acceso"
-          },
-          "password": {
-            "it": "parola chiave",
-            "es": "contraseña "
-          },
-          "username": {
-            "it": "nome utente"
-          },
-          "Welcome": {
-            "en": "Hello",
-            "it": "Benvenuto",
-            "es": "Bienvenida"
-          },
-          "wrongLogin": {
-            "en": "The user name and password you entered did not match.",
-            "it": "Il nome utente e la password che hai inserito non corrispondono.",
-            "es": "El nombre de usuario y la contraseña que ingresó no coinciden. "
-          }
-        }
-        this.append(json); //Add json to dictionaries
+
+     
       }
 
       /**
@@ -83,8 +74,8 @@
       * @param val : value
       */
       appendTerm(language, keyTerm, val) {
-        if (this.dictionaries[language] == undefined) this.dictionaries[language] = {}; //If dictionary doesnt exists, create it      
-        this.dictionaries[language][keyTerm] = val; //Append new term 
+        if (this.defaultDictionaries[language] == undefined) this.defaultDictionaries[language] = {}; //If dictionary doesnt exists, create it      
+        this.defaultDictionaries[language][keyTerm] = val; //Append new term 
       }
 
       /**

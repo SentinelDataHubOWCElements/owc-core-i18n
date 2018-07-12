@@ -9,25 +9,15 @@
         return {
           currentLanguage: {
             type: String,
-            value: 'en' //Application language
+            value: 'es' //Application language
           },
           dictionaries: { //All dictionaries
             type: Object,
             value: {
-              "username": {
-                "it": "nome utente"
-              },
-              "Welcome": {
-                "en": "Hello",
-                "it": "Benvenuto",
-                "es": "Bienvenida"
-              },
-              "wrongLogin": {
-                "en": "The user name and password you entered did not match.",
-                "it": "Il nome utente e la password che hai inserito non corrispondono.",
-                "es": "El nombre de usuario y la contraseña que ingresó no coinciden. "
+              "es":{
+                  "Welcome":"Bienvenida"
               }
-            }
+            }            
           },
           defaultDictionaries: { //All dictionaries
             type: Object,
@@ -43,14 +33,6 @@
         }
       }
 
-      ready() {
-        super.ready();
-        var self = this;
-
-
-     
-      }
-
       /**
       *   Append a json object to all dictionaries specified in json data
       *
@@ -58,6 +40,7 @@
       * key: keyTerm value 
       */
       append(jsonData) {
+        
         var self = this;
         Object.keys(jsonData).forEach(function (key) {
           Object.keys(jsonData[key]).forEach(function (language) {
@@ -85,6 +68,8 @@
        * @return {String} if a translation is present for the current language return the proper translations, otherwise returns
        */
       translate(keyTerm, language) {
+        console.log('translating ', keyTerm, ' in ', language, 'dictionary is ', this.dictionaries);
+
         if (this.dictionaries[language] == undefined) return keyTerm; //if looking for a non existing language, still returns the value
         return this.dictionaries[language][keyTerm] == undefined ? keyTerm : this.dictionaries[language][keyTerm];
       }

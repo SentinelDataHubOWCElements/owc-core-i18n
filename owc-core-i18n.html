@@ -68,7 +68,6 @@
        * @return {String} if a translation is present for the current language return the proper translations, otherwise returns
        */
       translate(keyTerm, language) {
-        console.log('translating ', keyTerm, ' in ', language, 'dictionary is ', this.dictionaries);
 
         if (this.dictionaries[language] == undefined) return keyTerm; //if looking for a non existing language, still returns the value
         return this.dictionaries[language][keyTerm] == undefined ? keyTerm : this.dictionaries[language][keyTerm];

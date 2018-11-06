@@ -14,10 +14,10 @@
           dictionaries: { //All dictionaries
             type: Object,
             value: {
-              "es":{
-                  "Welcome":"Bienvenida"
+              "es": {
+                "Welcome": "Bienvenida"
               }
-            }            
+            }
           },
           defaultDictionaries: { //All dictionaries
             type: Object,
@@ -33,6 +33,12 @@
         }
       }
 
+      ready() {
+        super.ready();
+        var self = this;
+        this._ctx = ApplicationContext.getInstance().context; //Context Assignment
+      }
+
       /**
       *   Append a json object to all dictionaries specified in json data
       *
@@ -40,7 +46,7 @@
       * key: keyTerm value 
       */
       append(jsonData) {
-        
+
         var self = this;
         Object.keys(jsonData).forEach(function (key) {
           Object.keys(jsonData[key]).forEach(function (language) {
